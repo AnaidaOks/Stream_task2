@@ -1,18 +1,20 @@
 package ru.netology;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
+
         List<String> names = Arrays.asList("Jack", "Connor", "Harry", "George", "Samuel", "John");
         List<String> families = Arrays.asList("Evans", "Young", "Harris", "Wilson", "Davies", "Adamson", "Brown");
         Collection<Person> persons = new ArrayList<>();
+
         for (int i = 0; i < 10_000_000; i++) {
             persons.add(new Person(
                     names.get(new Random().nextInt(names.size())),
@@ -26,21 +28,18 @@ public class Main {
         long personAge18 = persons.stream().filter(p -> p.getAge() < 18).count();
         System.out.println("Количество несовершеннолетних: " + personAge18);
 
-        List<String> recrut = persons.stream().filter(p -> p.getAge() >= 18 && p.getAge() <= 27)
-                .map(p -> p.getFamily()).collect(Collectors.toList());
         System.out.println("Призывники:");
-        // System.out.println(recrut);
+        persons.stream().filter(p -> p.getAge() >= 18 && p.getAge() <= 27)
+                .map(p -> p.getFamily()).forEach(System.out::println);
 
-        List<Person> worker = persons.stream()
+
+        System.out.println("Потенциальные работники с высшим образованием:");
+        persons.stream()
                 .filter(p -> p.getSex() == Sex.MAN
                         ? p.getAge() >= 18 && p.getAge() <= 65
                         : p.getAge() >= 18 && p.getAge() <= 60)
                 .filter(p -> p.getEducation() == Education.HIGHER)
                 .sorted(Comparator.comparing(person -> person.getFamily()))
-                .collect(Collectors.toList());
-
-        System.out.println("Потенциальные работники с высшим образованием:");
-        System.out.println(worker);
-
+                .forEach(System.out::println);
     }
 }
